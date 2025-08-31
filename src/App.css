@@ -1,0 +1,23 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.active{
+  color: orange;
+  font-size: 1.2rem;
+}
+
+.nav-list{
+  display: flex;
+  justify-content: center;
+  font-size: 1.1rem;
+  list-style: none;
+}
+
+.nav-list li{
+  margin-right: 2rem;
+  /*text-decoration: none;*/
+}
