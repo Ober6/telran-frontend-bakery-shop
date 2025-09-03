@@ -1,4 +1,4 @@
-export enum Paths{
+export enum Paths {
     HOME = '/',
     ORDERS = 'orders',
     PRODUCTS = 'products',
@@ -6,6 +6,7 @@ export enum Paths{
     CART = 'cart',
     BREAD = 'bread',
     DAIRY = 'dairy',
-
     ERROR = 'error',
+    LOGIN = 'login',
+    LOGOUT = 'logout'
 }
