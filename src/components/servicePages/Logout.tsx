@@ -1,34 +1,42 @@
-import { useDispatch } from "react-redux";
-import { resetAuthUser } from "../../redux/slices/AuthSlice.ts";
-import { Button, Box } from "@mui/material";
+import {Box, Dialog, DialogActions, DialogTitle} from "@mui/material";
+import Button from "@mui/material/Button";
+import {useAppDispatch} from "../../redux/hooks.ts";
+import {resetAuthUser} from "../../redux/slices/AuthSlice.ts";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+
 
 const Logout = () => {
-    const dispatch = useDispatch();
-
-    const handleLogout = () => {
-        dispatch(resetAuthUser());
-    }
-
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const handleClose = () => {setOpen(false)};
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <Button
-                variant="contained"
-                color="error"
-                onClick={handleLogout}
-                sx={{
-                    px: 4,
-                    py: 1.5,
-                    fontWeight: 'bold',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    '&:hover': {
-                        backgroundColor: '#d32f2f'
-                    }
-                }}
+        <Box>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
             >
-                Logout
-            </Button>
+                <DialogTitle id="alert-dialog-title">
+                    {"Are you really sure?"}
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose}>Return</Button>
+                    <Button onClick={() => {
+                        setOpen(false);
+                        dispatch(resetAuthUser());
+                        navigate('/');
+                    }} autoFocus>
+                        Logout anyway
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Button variant={"outlined"}
+                    onClick={ () => {
+                        setOpen(true);
+                    }}
+            >Logout</Button>
         </Box>
     );
 };

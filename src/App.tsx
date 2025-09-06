@@ -15,16 +15,29 @@ import NavigationDesktop from "./components/navigation/NavigationDesktop.tsx";
 import {navItems, productItems} from "./utils/constants.ts";
 import Logout from "./components/servicePages/Logout.tsx";
 import Login from "./components/servicePages/Login.tsx";
-import {store} from "./redux/store.ts";
-import {Provider} from "react-redux";
+import {type NavItemType, Roles} from "./utils/app-types.ts";
+import {useAppSelector} from "./redux/hooks.ts";
 
 function App() {
+    const {authUser} = useAppSelector(state => state.auth);
+
+    function predicate(item: NavItemType) {
+        return (
+            item.role === Roles.ALL ||
+            item.role === Roles.USER && authUser ||
+            item.role === Roles.ADMIN && authUser && authUser.includes('admin') ||
+            item.role === Roles.NO_AUTH && !authUser
+        )
+    }
+
+    function getRoutes() {
+        return navItems.filter(item => predicate(item));
+    }
 
     return (
-        <Provider store={store}>
         <Routes>
             {/*<Route path={Paths.HOME} element={<Layout/>}>*/}
-            <Route path={Paths.HOME} element={<NavigationDesktop items={navItems}/>}>
+            <Route path={Paths.HOME} element={<NavigationDesktop items={getRoutes()}/>}>
                 <Route index element={<Home/>}/>
                 <Route path={Paths.CART} element={<ShoppingCart/>}/>
                 <Route path={Paths.CUSTOMERS} element={<Customers/>}/>
@@ -40,8 +53,6 @@ function App() {
             </Route>
             <Route path={'*'} element={<Error404Page/>}/>
         </Routes>
-        </Provider>
-
     )
 }
 
