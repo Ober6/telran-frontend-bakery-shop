@@ -1,7 +1,16 @@
 import type {Paths} from "./paths.ts";
 
-export type NavItemType =
-    {
-        route:Paths,
-        itemName:string
-    }
+export enum Roles {
+    ALL, USER, ADMIN, NO_AUTH
+}
+
+export type NavItemType =    {
+    route: Paths,
+    itemName: string,
+    role?: Roles
+}
+
+export type LoginData = {
+    login: string,
+    password: string
+}

@@ -12,7 +12,8 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 
-import { GoogleIcon } from './CustomIcons';
+import { GoogleIcon,SitemarkIcon } from './CustomIcons';
+import type {LoginData} from "../../utils/app-types.ts";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -23,7 +24,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     gap: theme.spacing(2),
     margin: 'auto',
     [theme.breakpoints.up('sm')]: {
-        maxWidth: '450px',
+        maxWidth: '500px',
     },
     boxShadow:
         'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
@@ -34,8 +35,10 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
+    // height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
     minHeight: '100%',
+    width: '50vw',
+    minWidth: '450px',
     padding: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(4),
@@ -55,12 +58,10 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
         }),
     },
 }));
-
-interface SignInProps {
-    onSubmit: (data: {email: string, password: string}) => void;
+type Props = {
+    func: (data?:LoginData) => void;
 }
-
-export default function SignIn({onSubmit}: SignInProps) {
+export default function SignIn(props:Props) {
     const [emailError, setEmailError] = React.useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
     const [passwordError, setPasswordError] = React.useState(false);
@@ -72,15 +73,10 @@ export default function SignIn({onSubmit}: SignInProps) {
             return;
         }
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        onSubmit({
-            email: data.get('email') as string,
+        props.func({
+            login: data.get('email') as string,
             password: data.get('password') as string,
         });
-
     };
 
     const validateInputs = () => {
@@ -115,6 +111,7 @@ export default function SignIn({onSubmit}: SignInProps) {
             <CssBaseline enableColorScheme />
             <SignInContainer direction="column" justifyContent="space-between">
                 <Card variant="outlined">
+                    <SitemarkIcon />
                     <Typography
                         component="h1"
                         variant="h4"
@@ -160,35 +157,39 @@ export default function SignIn({onSubmit}: SignInProps) {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                autoFocus
                                 required
                                 fullWidth
                                 variant="outlined"
                                 color={passwordError ? 'error' : 'primary'}
                             />
                         </FormControl>
+
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
-                            // onClick={validateInputs}
+                            onClick={validateInputs}
                         >
                             Sign in
                         </Button>
+
                     </Box>
                     <Divider>or</Divider>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert('Sign in with Google')}
+                            onClick={() => props.func()}
                             startIcon={<GoogleIcon />}
                         >
                             Sign in with Google
                         </Button>
+
                         <Typography sx={{ textAlign: 'center' }}>
                             Don&apos;t have an account?{' '}
                             <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
+                                href="#"
                                 variant="body2"
                                 sx={{ alignSelf: 'center' }}
                             >

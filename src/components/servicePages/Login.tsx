@@ -1,17 +1,35 @@
 import SignIn from "../templates/SignIn.tsx";
-import {useDispatch} from "react-redux";
-import {setUserData} from "../../redux/slices/AuthSlice.ts";
+import type {LoginData} from "../../utils/app-types.ts";
+import {useAppDispatch} from "../../redux/hooks.ts";
+import {setAuthUser} from "../../redux/slices/AuthSlice.ts";
+import {useNavigate} from "react-router-dom";
+import {login} from "../../firebase/firebaseAuthService.ts";
+
 
 const Login = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
-    const handleLogin = (data: {email: string, password: string}) => {
-        dispatch(setUserData(data));
+    // const loginFunc = (data:LoginData) => {
+    //     dispatch(setAuthUser(data.login));
+    //     navigate('/')
+    // }
+
+    const loginWithFirebase = async (data?:LoginData)=> {
+        try {
+            const authUser = await login(data);
+            dispatch(setAuthUser(authUser));
+            navigate('/')
+        } catch (e) {
+            console.log(e) //Todo
+        }
     }
+
 
     return (
         <div>
-            <SignIn onSubmit={handleLogin} />
+            {/*<SignIn func={loginFunc}/>*/}
+            <SignIn func={loginWithFirebase}/>
         </div>
     );
 };

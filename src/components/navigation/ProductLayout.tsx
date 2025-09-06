@@ -1,5 +1,5 @@
-import {Paths} from "../../utils/paths.ts";
 import {NavLink, Outlet} from "react-router-dom";
+import {Paths} from "../../utils/paths.ts";
 
 
 const ProductLayout = () => {
