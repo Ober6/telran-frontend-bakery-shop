@@ -6,12 +6,12 @@ import {getAuth} from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyD71-G8WLdrV4MuWGjknnesM0RnagL8-_c",
-    authDomain: "bakery-shop-java-28-31.firebaseapp.com",
-    projectId: "bakery-shop-java-28-31",
-    storageBucket: "bakery-shop-java-28-31.firebasestorage.app",
-    messagingSenderId: "532245998892",
-    appId: "1:532245998892:web:b1a6222656772d16ad9089"
+    apiKey: "AIzaSyAqCN44qxpdKHLDcQeeW87BL9ccXqJvHyA",
+    authDomain: "bakery-shop-ca394.firebaseapp.com",
+    projectId: "bakery-shop-ca394",
+    storageBucket: "bakery-shop-ca394.firebasestorage.app",
+    messagingSenderId: "735420430494",
+    appId: "1:735420430494:web:c7040ca7069feb6823638f"
 };
 
 // Initialize Firebase
