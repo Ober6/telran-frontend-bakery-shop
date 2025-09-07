@@ -4,7 +4,7 @@ import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword} from 'firebase/auth';
-import type {LoginData} from "../utils/app-types.ts";
+import type {LoginData, SignUpData} from "../utils/app-types.ts";
 import {auth} from "../configurations/firebase-config.ts";
 
 
@@ -26,8 +26,8 @@ export const logout = async () => {
     await signOut(auth);
 }
 
-export const registerWithEmailPass = async (data:LoginData)=> {
-    const result = await createUserWithEmailAndPassword(auth, data.login, data.password);
+export const registerWithEmailPass = async (data:SignUpData)=> {
+    const result = await createUserWithEmailAndPassword(auth, data.email, data.password);
     const user = result.user;
     return user.email;
 }

@@ -15,6 +15,7 @@ import NavigationDesktop from "./components/navigation/NavigationDesktop.tsx";
 import {navItems, productItems} from "./utils/constants.ts";
 import Logout from "./components/servicePages/Logout.tsx";
 import Login from "./components/servicePages/Login.tsx";
+import Registration from "./components/servicePages/Registration.tsx";
 import {type NavItemType, Roles} from "./utils/app-types.ts";
 import {useAppSelector} from "./redux/hooks.ts";
 
@@ -26,6 +27,7 @@ function App() {
             item.role === Roles.ALL ||
             item.role === Roles.USER && authUser ||
             item.role === Roles.ADMIN && authUser && authUser.includes('admin') ||
+            item.role === Roles.NO_ADMIN_USER && authUser && !authUser.includes('admin') ||
             item.role === Roles.NO_AUTH && !authUser
         )
     }
@@ -51,6 +53,7 @@ function App() {
                 <Route path={Paths.LOGOUT} element={<Logout/>}/>
                 <Route path={Paths.LOGIN} element={<Login/>}/>
             </Route>
+            <Route path={Paths.REGISTRATION} element={<Registration/>}/>
             <Route path={'*'} element={<Error404Page/>}/>
         </Routes>
     )

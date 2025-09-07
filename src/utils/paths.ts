@@ -8,5 +8,6 @@ export enum Paths {
     DAIRY = 'dairy',
     ERROR = 'error',
     LOGIN = 'login',
-    LOGOUT = 'logout'
+    LOGOUT = 'logout',
+    REGISTRATION = 'registration'
 }
