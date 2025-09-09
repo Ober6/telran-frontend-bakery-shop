@@ -20,7 +20,7 @@ const NavigationDesktop: FC<Props> = ({items}) => {
 
             <AppBar sx={{backgroundColor: "lightgrey"}}>
                 <Toolbar sx={{justifyContent: "space-between"}}>
-                    <Tabs value={value} onChange={handleChange}>
+                    <Tabs value={value > items.length? 0 : value} onChange={handleChange}>
                         {items.map(item =>
                             <Tab key={item.route} component={Link} to={item.route} label={item.itemName}/>
                         )}
