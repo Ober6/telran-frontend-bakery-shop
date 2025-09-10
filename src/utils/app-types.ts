@@ -17,7 +17,7 @@ export type LoginData = {
 
 export type SignUpData = {
     name: string,
-    lastName?: string|null,
+    // lastName?: string|null,
     email: string,
     password: string,
 }
@@ -34,3 +34,8 @@ export type ProductType = {
 export type Category = {
     categoryName: string,
 }
+
+export type AuthUser = {
+    email: string | null;
+    displayName: string | null;
+};

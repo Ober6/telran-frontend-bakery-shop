@@ -1,71 +1,72 @@
-import {doc,setDoc, getDoc, deleteDoc, collection, getCountFromServer} from 'firebase/firestore'
-import {db} from "../configurations/firebase-config.ts";
-import type {Category, ProductType} from "../utils/app-types.ts";
-import {getRandomNumber} from "../utils/tools.ts";
+import { doc, setDoc, getDoc, deleteDoc, collection, getCountFromServer } from 'firebase/firestore';
+import { db } from "../configurations/firebase-config.ts";
+import type { Category, ProductType } from "../utils/app-types.ts";
+import { getRandomNumber } from "../utils/tools.ts";
 import productConfig from '../configurations/products-config.json';
+import type { WithFieldValue, DocumentData } from 'firebase/firestore';
+
 
 const prodColl = collection(db, "product_collection");
 const categoryColl = collection(db, "category_collection");
 
-
-export const addProduct = async (product:ProductType) => {
-    product.id = getRandomNumber(10000, 99999) + "";
-    const ref = doc(prodColl, product.id);
-    await setDoc(ref, product);
+async function addItem<T extends DocumentData>(
+    coll: typeof prodColl | typeof categoryColl,
+    id: string,
+    item: WithFieldValue<T>
+) {
+    const ref = doc(coll, id);
+    await setDoc(ref, item);
 }
 
-export const addCategory = async (cat: Category)=> {
-    const ref = doc(categoryColl, cat.categoryName);
-    await setDoc(ref, cat);
-}
-
-export const removeProduct = async (id:string) => {
-    const ref = doc(prodColl, id);
-    const removed = await getDoc(ref);
-    if(!removed.exists()) throw new Error(`No product with id: ${id}`);
-    await deleteDoc(ref)
-    return removed.data();
-}
-
-export const removeCategory = async (name:string) => {
-    const ref = doc(categoryColl, name);
-    const remCat = await getDoc(ref);
-    if(!remCat.exists()) throw new Error(`Category ${name} not exists`);
+async function removeItem<T>(coll: typeof prodColl | typeof categoryColl, id: string) {
+    const ref = doc(coll, id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) throw new Error(`Item with id "${id}" not found`);
     await deleteDoc(ref);
-    return remCat.data();
+    return snap.data() as T;
 }
 
-export const getProduct = async (id:string) => {
-    const ref = doc(prodColl, id);
-    const prod = await getDoc(ref);
-    if(!prod.exists()) throw new Error(`No product with id: ${id}`);
-    return prod.data();
+async function getItem<T>(coll: typeof prodColl | typeof categoryColl, id: string) {
+    const ref = doc(coll, id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) throw new Error(`Item with id "${id}" not found`);
+    return snap.data() as T;
 }
 
-export const isCategoryExists = async (name:string) => {
-    const ref = doc(categoryColl, name);
-    const category = await getDoc(ref);
-    return category.exists();
+async function exists(coll: typeof prodColl | typeof categoryColl, id: string) {
+    const ref = doc(coll, id);
+    const snap = await getDoc(ref);
+    return snap.exists();
 }
+
+export const addProduct = (product: ProductType) => {
+    product.id = getRandomNumber(10000, 99999) + "";
+    return addItem(prodColl, product.id, product);
+}
+
+export const addCategory = (cat: Category) => addItem(categoryColl, cat.categoryName, cat);
+export const removeProduct = (id: string) => removeItem<ProductType>(prodColl, id);
+export const removeCategory = (name: string) => removeItem<Category>(categoryColl, name);
+export const getProduct = (id: string) => getItem<ProductType>(prodColl, id);
+export const isCategoryExists = (name: string) => exists(categoryColl, name);
 
 export const setProducts = async () => {
     let count = (await getCountFromServer(prodColl)).data().count;
-    if(count === 0){
-        const products: ProductType[] = productConfig.map(item => (
-            {
-                title: item.name,
-                category: item.name.split('-')[0],
-                unit: item.unit,
-                cost: item.cost,
-                img: item.name + '.jpg'
+    if (count === 0) {
+        const products: ProductType[] = productConfig.map(item => ({
+            title: item.name,
+            category: item.name.split('-')[0],
+            unit: item.unit,
+            cost: item.cost,
+            img: item.name + '.jpg'
+        }));
+
+        for (const p of products) {
+            if (!await isCategoryExists(p.category)) {
+                await addCategory({ categoryName: p.category });
             }
-        ));
-        for (let i = 0; i < products.length; i++) {
-            const temp = await isCategoryExists(products[i].category);
-            if(!temp)
-                await addCategory({categoryName: products[i].category});
-            await addProduct(products[i]);
-            count ++;
+            await addProduct(p);
+            count++;
         }
     }
     return count;

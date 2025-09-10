@@ -20,15 +20,17 @@ import {useAppSelector} from "./redux/hooks.ts";
 import Registration from "./components/servicePages/Registration.tsx";
 
 function App() {
+    // const {authUser} = useAppSelector(state => state.auth) as { authUser: any };
     const {authUser} = useAppSelector(state => state.auth);
 
     function predicate(item: NavItemType) {
+        const email = authUser?.email ?? "";
         return (
             item.role === Roles.ALL ||
             item.role === Roles.USER && authUser ||
-            item.role === Roles.ADMIN && authUser && authUser.includes('admin') ||
+            item.role === Roles.ADMIN && authUser && email.includes('admin') ||
             item.role === Roles.NO_AUTH && !authUser||
-            item.role === Roles.USER_ONLY && authUser && !authUser.includes('admin')
+            item.role === Roles.USER_ONLY && authUser && !email.includes('admin')
         )
     }
 

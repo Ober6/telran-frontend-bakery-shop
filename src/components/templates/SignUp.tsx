@@ -64,7 +64,7 @@ export default function SignUp(props: { func: (data:SignUpData) => void }) {
         const data = new FormData(event.currentTarget);
         props.func({
             name: data.get('name') as string,
-            lastName: data.get('lastName') as string,
+            // lastName: data.get('lastName') as string,
             email: data.get('email') as string,
             password: data.get('password') as string,
         });
@@ -72,7 +72,6 @@ export default function SignUp(props: { func: (data:SignUpData) => void }) {
 
     return (
         <Box>
-
             <SignInContainer direction="column" justifyContent="space-between">
                 <Card variant="outlined">
                     <SitemarkIcon />
