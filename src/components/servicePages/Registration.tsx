@@ -1,56 +1,32 @@
-import {registerWithEmailPass} from "../../firebase/firebaseAuthService.ts";
-import type { SignUpData} from "../../utils/app-types.ts";
-import {setAuthUser} from "../../redux/slices/AuthSlice.ts";
-import {useAppDispatch} from "../../redux/hooks.ts";
-import {useNavigate} from "react-router-dom";
 import SignUp from "../templates/SignUp.tsx";
-import {useState} from "react";
+import type {SignUpData} from "../../utils/app-types.ts";
+// import {registerWithEmailPass} from "../../firebase/firebaseAuthService.ts";
+import {registerWithNameEmailPass} from "../../firebase/firebaseAuthService.ts";
+import {useNavigate} from "react-router-dom";
+import {Paths} from "../../utils/paths.ts";
+
 
 const Registration = () => {
-    const  dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const [errorMessage, setErrorMessage] = useState('');
-
-
-    const registerWithFireBase = async (data:SignUpData) => {
+    const registerFirebase = async (data: SignUpData) => {
+        const registerData: SignUpData = {
+            name: data.name,
+            email: data.email,
+            password: data.password
+        }
         try {
-            const registeredUser = await registerWithEmailPass(data);
-            dispatch(setAuthUser(registeredUser));
-            navigate('/')
+            // await registerWithEmailPass(registerData);
+            await registerWithNameEmailPass(registerData);
+            navigate(`/${Paths.LOGIN}`);
         } catch (e) {
-            const error = e as Error;
-            setErrorMessage('Error: ' + (error.message || error));
+            console.log(e);
+            navigate(`/`)
         }
     }
+
     return (
         <div>
-            {errorMessage && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: '20px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        background: '#ffdddd',
-                        color: '#900',
-                        padding: '10px 20px',
-                        border: '1px solid #900',
-                        borderRadius: '5px',
-                        zIndex: 1000,
-                    }}
-                >
-                    {errorMessage}
-                    <button
-                        style={{ marginLeft: '10px' }}
-                        onClick={() => setErrorMessage('')}
-                    >
-                        OK
-                    </button>
-                </div>
-            )}
-
-
-            <SignUp func={registerWithFireBase}/>
+            <SignUp func={registerFirebase}/>
         </div>
     );
 };

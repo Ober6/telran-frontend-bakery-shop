@@ -1,7 +1,7 @@
 import type {Paths} from "./paths.ts";
 
 export enum Roles {
-    ALL, USER, ADMIN, NO_AUTH, NO_ADMIN_USER
+    ALL, USER, ADMIN, NO_AUTH, USER_ONLY
 }
 
 export type NavItemType =    {
@@ -17,6 +17,25 @@ export type LoginData = {
 
 export type SignUpData = {
     name: string,
+    // lastName?: string|null,
     email: string,
     password: string,
 }
+
+export type ProductType = {
+    id?:string,
+    title:string,
+    category: string,
+    unit: string,
+    cost: number,
+    img: string,
+}
+
+export type Category = {
+    categoryName: string,
+}
+
+export type AuthUser = {
+    email: string | null;
+    displayName: string | null;
+};
