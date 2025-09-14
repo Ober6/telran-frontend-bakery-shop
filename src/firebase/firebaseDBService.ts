@@ -4,6 +4,8 @@ import type { Category, ProductType } from "../utils/app-types.ts";
 import { getRandomNumber } from "../utils/tools.ts";
 import productConfig from '../configurations/products-config.json';
 import type { WithFieldValue, DocumentData } from 'firebase/firestore';
+import {Observable} from "rxjs";
+import {collectionData} from "rxfire/firestore";
 
 
 const prodColl = collection(db, "product_collection");
@@ -70,4 +72,8 @@ export const setProducts = async () => {
         }
     }
     return count;
+}
+
+export const getProducts = () => {
+    return collectionData(prodColl) as Observable<ProductType[]>
 }
