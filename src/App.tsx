@@ -15,13 +15,26 @@ import NavigationDesktop from "./components/navigation/NavigationDesktop.tsx";
 import {navItems, productItems} from "./utils/constants.ts";
 import Logout from "./components/servicePages/Logout.tsx";
 import Login from "./components/servicePages/Login.tsx";
-import {type NavItemType, Roles} from "./utils/app-types.ts";
-import {useAppSelector} from "./redux/hooks.ts";
+import {type NavItemType, type ProductType, Roles} from "./utils/app-types.ts";
+import {useAppDispatch, useAppSelector} from "./redux/hooks.ts";
 import Registration from "./components/servicePages/Registration.tsx";
+import {useEffect} from "react";
+import {getProducts} from "./firebase/firebaseDBService.ts";
+import {prodsUpd} from "./redux/slices/productSlice.ts";
 
 function App() {
     // const {authUser} = useAppSelector(state => state.auth) as { authUser: any };
     const {authUser} = useAppSelector(state => state.auth);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const subscription = getProducts().subscribe({
+            next:(prods:ProductType[])=>{
+                dispatch(prodsUpd(prods));
+            }
+        })
+        return () => subscription.unsubscribe();
+    },[]);
 
     function predicate(item: NavItemType) {
         const email = authUser?.email ?? "";
