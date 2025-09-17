@@ -1,18 +1,16 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {ProductType} from "../../utils/app-types.ts";
 
-type productState = {
-    currProds: ProductType[]
-}
 
-const initialState: productState = {currProds: []};
 
-const productSlice = createSlice({
+const initialState:{currProds: ProductType[]} = {currProds:[]};
+
+const productSlice  = createSlice({
     name: "products",
     initialState,
     reducers: {
         prodsUpd: (state, action) => {
-            state.currProds = action.payload;
+            state.currProds = action.payload
         }
     }
 })

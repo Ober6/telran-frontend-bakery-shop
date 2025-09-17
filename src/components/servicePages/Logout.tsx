@@ -4,7 +4,8 @@ import {useAppDispatch} from "../../redux/hooks.ts";
 import {resetAuthUser} from "../../redux/slices/AuthSlice.ts";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-
+import {resetCart} from "../../redux/slices/cartSlice.ts";
+import {cartUnsubscribe} from "./Login";
 
 const Logout = () => {
     const [open, setOpen] = useState(false);
@@ -25,6 +26,8 @@ const Logout = () => {
                     <Button onClick={handleClose}>Return</Button>
                     <Button onClick={() => {
                         setOpen(false);
+                        if (cartUnsubscribe) cartUnsubscribe();
+                        dispatch(resetCart());
                         dispatch(resetAuthUser());
                         navigate('/');
                     }} autoFocus>

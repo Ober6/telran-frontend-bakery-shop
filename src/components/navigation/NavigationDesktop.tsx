@@ -58,7 +58,7 @@ const NavigationDesktop: FC<Props> = ({items}) => {
                             borderRadius: 2,
                         }}
                         >
-                            {authUser.displayName ?? authUser.email ?? "User"}
+                            {authUser.email ?? "User"}
                         </Avatar>}
                 </Toolbar>
             </AppBar>

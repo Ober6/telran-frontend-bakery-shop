@@ -6,7 +6,7 @@ import ShoppingCart from "./components/ShoppingCart.tsx";
 import Customers from "./components/Customers.tsx";
 import Orders from "./components/Orders.tsx";
 //import Products from "./components/Products.tsx";
-import Bread from "./components/Bread.tsx";
+import Bread from "./components/Bread/Bread.tsx";
 import Dairy from "./components/Dairy.tsx";
 //import Layout from "./components/navigation/Layout.tsx";
 //import ProductLayout from "./components/navigation/ProductLayout.tsx";
@@ -19,31 +19,45 @@ import {type NavItemType, type ProductType, Roles} from "./utils/app-types.ts";
 import {useAppDispatch, useAppSelector} from "./redux/hooks.ts";
 import Registration from "./components/servicePages/Registration.tsx";
 import {useEffect} from "react";
-import {getProducts} from "./firebase/firebaseDBService.ts";
+import {getProductsRxJs} from "./firebase/firebaseDBService.ts";
 import {prodsUpd} from "./redux/slices/productSlice.ts";
+//import {useProductsFirebase} from "./utils/tools.ts";
 
 function App() {
-    // const {authUser} = useAppSelector(state => state.auth) as { authUser: any };
     const {authUser} = useAppSelector(state => state.auth);
     const dispatch = useAppDispatch();
+//==================old variant with rxfire========================
+//     useEffect(() => {
+//         const subscribtion = getProducts().subscribe({
+//             next: (prods: ProductType[]) => {
+//                 dispatch(prodsUpd(prods))
+//             }
+//         })
+//         return () => subscribtion.unsubscribe()
+//     }, []);
 
+    //==================2 variant===========================
+    //useProductsFirebase();
+    //======================3 variant=======================
     useEffect(() => {
-        const subscription = getProducts().subscribe({
-            next:(prods:ProductType[])=>{
-                dispatch(prodsUpd(prods));
+        const subscribtion = getProductsRxJs().subscribe({
+            next: (prods: ProductType[]) => {
+                dispatch(prodsUpd(prods))
+            },
+            error: (err) => {
+                console.log(err)
             }
         })
-        return () => subscription.unsubscribe();
-    },[]);
+        return () => subscribtion.unsubscribe()
+    }, []);
 
     function predicate(item: NavItemType) {
-        const email = authUser?.email ?? "";
         return (
             item.role === Roles.ALL ||
             item.role === Roles.USER && authUser ||
-            item.role === Roles.ADMIN && authUser && email.includes('admin') ||
+            item.role === Roles.ADMIN && authUser && authUser.email.includes('admin') ||
             item.role === Roles.NO_AUTH && !authUser||
-            item.role === Roles.USER_ONLY && authUser && !email.includes('admin')
+            item.role === Roles.USER_ONLY && authUser && !authUser.email.includes('admin')
         )
     }
 
