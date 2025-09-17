@@ -1,27 +1,44 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { AuthUser } from "../../utils/app-types";
-import type { PayloadAction } from "@reduxjs/toolkit"
+import {createSlice} from "@reduxjs/toolkit";
+import type {AuthUserType} from "../../utils/app-types.ts";
+import type {AppDispatch} from "../store";
+import { setCart, resetCart } from "./cartSlice";
+import { subscribeToCart } from "../../firebase/fireCartService";
 
-type AuthState = {
-  authUser: AuthUser | null;
-};
+let unsubscribeCart: (() => void) | null = null;
 
-const initialState: AuthState = {
-  authUser: null
-};
+const initialState:{authUser: AuthUserType|null} = {authUser: null}
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
-    setAuthUser: (state, action: PayloadAction<AuthUser>) => {
-      state.authUser = action.payload;
+    setAuthUser: (state, action) => {
+      state.authUser = {...action.payload}
     },
-    resetAuthUser: (state) => {
-      state.authUser = null;
+    resetAuthUser: state => {
+      state.authUser = null
     }
   }
 });
 
-export const { setAuthUser, resetAuthUser } = authSlice.actions;
+export const {setAuthUser, resetAuthUser} = authSlice.actions;
 export const authReducer = authSlice.reducer;
+
+export const loginUser = (user: AuthUserType) => (dispatch: AppDispatch) => {
+  dispatch(setAuthUser(user));
+  if (unsubscribeCart) unsubscribeCart();
+  unsubscribeCart = subscribeToCart(user.uid, (items) => {
+    dispatch(setCart(items));
+  });
+};
+
+export const logoutUser = () => (dispatch: AppDispatch) => {
+  dispatch(resetAuthUser());
+  dispatch(resetCart());
+
+  if (unsubscribeCart) {
+    unsubscribeCart();
+    unsubscribeCart = null;
+  }
+};
+

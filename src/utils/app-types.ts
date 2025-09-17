@@ -16,26 +16,33 @@ export type LoginData = {
 }
 
 export type SignUpData = {
-    name: string,
-    // lastName?: string|null,
-    email: string,
-    password: string,
+    name:string,
+    lastName?:string|null,
+    email:string,
+    password:string
 }
 
 export type ProductType = {
-    id?:string,
-    title:string,
-    category: string,
-    unit: string,
-    cost: number,
-    img: string,
-}
+    id: string;
+    title: string;
+    category: string;
+    unit: string;
+    cost: number;
+    img: string;
+};
+
 
 export type Category = {
-    categoryName: string,
+    categoryName:string
 }
 
-export type AuthUser = {
-    email: string | null;
-    displayName: string | null;
+export type AuthUserType = {
+    uid: string;
+    name: string;
+    email: string;
 };
+
+export type ShopCartProdType = {
+    prodId: string,
+    count: number
+}
